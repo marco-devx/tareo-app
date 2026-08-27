@@ -1,7 +1,7 @@
 // API HTTP (JSON) bajo /api
 import { Router } from 'express';
 import * as store from './store.js';
-import { MODO, EN_VERCEL, MENSAJE_SIN_CONFIGURAR } from './db.js';
+import { MODO, EN_VERCEL, BLOB_AUTH, MENSAJE_SIN_CONFIGURAR } from './db.js';
 
 const APP_PASSWORD = process.env.APP_PASSWORD || '';
 const api = Router();
@@ -19,6 +19,7 @@ api.get('/health', (req, res) => {
     almacenamiento: MODO,
     enVercel: EN_VERCEL,
     blobConectado: MODO === 'vercel-blob',
+    blobAuth: BLOB_AUTH, // 'oidc' (BLOB_STORE_ID + VERCEL_OIDC_TOKEN) | 'token' (BLOB_READ_WRITE_TOKEN) | null
     mensaje: ok
       ? MODO === 'vercel-blob'
         ? 'Correcto: los datos se guardan en el Vercel Blob Store.'

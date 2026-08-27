@@ -41,8 +41,8 @@ Pruebas: `npm test`.
    git remote add origin <url-del-repo> && git push -u origin main
    ```
 2. En [vercel.com](https://vercel.com) → **Add New… → Project** → importa el repositorio. Vercel detecta *Express* automáticamente (Framework Preset: Express). Pulsa **Deploy**.
-3. Crea el almacenamiento de archivos: en el proyecto → pestaña **Storage** → **Create Database → Blob** → nombre por ejemplo `tareo-db` → acceso **Private** (recomendado) → **Connect** al proyecto.
-   Eso agrega sola la variable `BLOB_READ_WRITE_TOKEN` al proyecto.
+3. Crea el almacenamiento de archivos: en el proyecto → pestaña **Storage** → **Create Database → Blob** → nombre por ejemplo `tareo-db` → acceso **Private** (recomendado) → **Connect Project** (elige el proyecto y los ambientes Production y Preview).
+   Eso agrega solas las variables `BLOB_STORE_ID` y `VERCEL_OIDC_TOKEN` (autenticación OIDC; en stores antiguos puede ser `BLOB_READ_WRITE_TOKEN`). La app acepta cualquiera de las dos.
    > Si creaste el store como *Public*, agrega la variable `BLOB_ACCESS=public` en Settings → Environment Variables.
 4. (Opcional) Settings → Environment Variables → `APP_PASSWORD=<clave compartida>` para que solo el equipo pueda entrar (se pide una vez por navegador).
 5. **Deployments → Redeploy** para que la función tome las variables nuevas. Listo: la URL `https://<proyecto>.vercel.app` ya guarda los datos en el Blob Store.
@@ -54,9 +54,9 @@ También sirve con la CLI: `npx vercel` (preview) y `npx vercel --prod`.
 Abre `https://<tu-app>.vercel.app/api/health`:
 
 - `"almacenamiento": "vercel-blob"` → correcto, los datos se guardan en el Blob Store.
-- `"almacenamiento": "sin-configurar"` (HTTP 503) → la función no ve `BLOB_READ_WRITE_TOKEN`. Revisa en Vercel:
+- `"almacenamiento": "sin-configurar"` (HTTP 503) → la función no ve `BLOB_STORE_ID` ni `BLOB_READ_WRITE_TOKEN`. Revisa en Vercel:
   1. **Storage** → el store debe mostrar tu proyecto en *Connected Projects* (si no, **Connect Project**).
-  2. **Settings → Environment Variables** → debe existir `BLOB_READ_WRITE_TOKEN` para *Production* (y Preview).
+  2. **Settings → Environment Variables** → debe existir `BLOB_STORE_ID` (o `BLOB_READ_WRITE_TOKEN`) para *Production* (y Preview).
   3. **Deployments → ⋯ → Redeploy**: las variables solo se aplican a deploys nuevos.
 
 Si ves `ENOENT ... mkdir '/var/task/data'` en una versión anterior de la app, es el mismo problema: sin token, intentó usar la carpeta local (de solo lectura en Vercel).
@@ -114,6 +114,7 @@ Si `APP_PASSWORD` está definida, todas las rutas (salvo `/api/config` y `/api/h
 | `PORT` | Puerto local (por defecto 4310) |
 | `DATA_DIR` | Carpeta de los JSON en modo local (por defecto `./data`) |
 | `APP_PASSWORD` | Contraseña compartida opcional |
-| `BLOB_READ_WRITE_TOKEN` | La agrega Vercel al conectar el Blob Store; activa el modo nube |
+| `BLOB_STORE_ID` + `VERCEL_OIDC_TOKEN` | Las agrega Vercel al conectar el Blob Store (OIDC); activan el modo nube |
+| `BLOB_READ_WRITE_TOKEN` | Alternativa: token clásico de lectura/escritura (stores antiguos o fuera de Vercel) |
 | `BLOB_ACCESS` | `private` (por defecto) o `public`, según cómo se creó el store |
 | `BLOB_PREFIX` | Carpeta dentro del store (por defecto `tareo-db`) |

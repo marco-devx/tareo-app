@@ -100,6 +100,13 @@ test('en Vercel sin Blob Store el modo es sin-configurar y no intenta escribir e
   const r = JSON.parse(salida.trim().split('\n').pop());
   assert.equal(r.modo, 'sin-configurar');
   assert.match(r.error, /^503 Falta conectar el Blob Store/);
+
+  // Con BLOB_STORE_ID (conexión OIDC, la forma actual de Vercel) el modo pasa a vercel-blob.
+  const salidaOidc = execFileSync(process.execPath, ['--input-type=module', '-e', `
+    const db = await import('./src/db.js');
+    console.log(JSON.stringify({ modo: db.MODO, auth: db.BLOB_AUTH }));
+  `], { cwd: path.resolve(import.meta.dirname, '..'), env: { ...process.env, VERCEL: '1', BLOB_READ_WRITE_TOKEN: '', BLOB_STORE_ID: 'store_abc' }, encoding: 'utf8' });
+  assert.deepEqual(JSON.parse(salidaOidc.trim().split('\n').pop()), { modo: 'vercel-blob', auth: 'oidc' });
 });
 
 test('no se elimina un catálogo en uso; sí uno libre', async () => {

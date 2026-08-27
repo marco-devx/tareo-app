@@ -7,15 +7,18 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+// Credenciales del Blob Store. Al conectar un store, Vercel agrega BLOB_STORE_ID (+ VERCEL_OIDC_TOKEN,
+// autenticación OIDC por defecto) o, en stores antiguos / fuera de Vercel, BLOB_READ_WRITE_TOKEN.
+// El SDK @vercel/blob lee cualquiera de las dos por sí solo.
+export const BLOB_AUTH = process.env.BLOB_READ_WRITE_TOKEN ? 'token' : process.env.BLOB_STORE_ID ? 'oidc' : null;
 export const EN_VERCEL = Boolean(process.env.VERCEL);
 // 'vercel-blob'    → nube, archivos JSON en un Vercel Blob Store
 // 'archivos'       → local / servidor propio, carpeta DATA_DIR
-// 'sin-configurar' → estamos en Vercel pero falta conectar el Blob Store (BLOB_READ_WRITE_TOKEN)
-export const MODO = BLOB_TOKEN ? 'vercel-blob' : EN_VERCEL ? 'sin-configurar' : 'archivos';
+// 'sin-configurar' → estamos en Vercel pero falta conectar el Blob Store
+export const MODO = BLOB_AUTH ? 'vercel-blob' : EN_VERCEL ? 'sin-configurar' : 'archivos';
 export const MENSAJE_SIN_CONFIGURAR =
-  'Falta conectar el Blob Store al proyecto en Vercel (no existe la variable BLOB_READ_WRITE_TOKEN). ' +
-  'Ve a Storage → Create Database → Blob → Connect Project y luego haz Redeploy.';
+  'Falta conectar el Blob Store al proyecto en Vercel (no existen las variables BLOB_STORE_ID ni BLOB_READ_WRITE_TOKEN). ' +
+  'Ve a Storage → tu store → Connect Project, elige el proyecto y sus ambientes, y luego haz Redeploy.';
 export const DATA_DIR = path.resolve(process.env.DATA_DIR || 'data');
 const BLOB_ACCESS = process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
 const BLOB_PREFIX = (process.env.BLOB_PREFIX || 'tareo-db').replace(/^\/+|\/+$/g, '');

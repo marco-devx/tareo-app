@@ -125,7 +125,7 @@
       const b = document.createElement('div');
       b.id = 'banner-config';
       b.className = 'banner-error';
-      b.innerHTML = '<b>La base de datos no está conectada.</b> En Vercel: Storage → Create Database → Blob → Connect Project, y luego Redeploy. Revisa <a href="/api/health" target="_blank">/api/health</a>.';
+      b.innerHTML = '<b>La base de datos no está conectada.</b> En Vercel: Storage → tu Blob Store → Connect Project (elige el proyecto y sus ambientes) y luego Redeploy. Revisa <a href="/api/health" target="_blank">/api/health</a>.';
       $('main').prepend(b);
     }
     if (estado.config.requierePassword && !localStorage.getItem(LS.password)) return mostrarGatePassword();
