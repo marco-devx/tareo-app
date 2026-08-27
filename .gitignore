@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.vercel/
+# Base de datos local (archivos JSON). Se conserva la carpeta, no los datos.
+data/*
+!data/.gitkeep
+*.tmp

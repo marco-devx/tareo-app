@@ -1,0 +1,20 @@
+{
+  "name": "tareo-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Registro de horas (tareo) por persona, rol, cliente y actividad. Monolito Express con base de datos en archivos JSON (local) o Vercel Blob (nube).",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.0",
+    "express": "^5.2.1"
+  }
+}

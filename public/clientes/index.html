@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clientes · Tareo</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>⏱️</text></svg>">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-pagina="clientes">
+  <header class="topbar"><div class="marca">⏱️ Tareo de horas</div><span class="chip">Administración</span></header>
+  <main class="contenedor">
+    <div id="app" hidden>
+      <nav class="tabs no-imprimir" aria-label="Administración">
+        <a href="/personas" data-pagina-link="personas">Personas</a>
+        <a href="/clientes" data-pagina-link="clientes">Clientes</a>
+        <a href="/reporte" data-pagina-link="reporte">Reporte</a>
+        <a href="/" class="volver">← Ir al tareo</a>
+      </nav>
+      <div class="tarjeta">
+        <div class="cabecera-tarjeta"><h2>Clientes</h2></div>
+        <p class="ayuda">Lista de clientes/empresas que se seleccionan en el paso 2 del tareo. Si un cliente ya tiene tareos, desactívalo en lugar de eliminarlo.</p>
+        <form id="form-catalogo" class="grid-form" autocomplete="off">
+          <label>Nombre del cliente <input name="nombre" required minlength="2" maxlength="80" placeholder="Ej. Minera Andes S.A."></label>
+          <div class="acciones"><button class="btn primario">Agregar cliente</button></div>
+        </form>
+        <div id="lista" class="lista-catalogo"></div>
+      </div>
+    </div>
+  </main>
+  <div id="avisos" class="avisos" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

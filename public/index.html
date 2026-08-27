@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tareo de horas</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>⏱️</text></svg>">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-pagina="tareo">
+  <header class="topbar"><div class="marca">⏱️ Tareo de horas</div></header>
+  <main class="contenedor">
+    <div id="app" hidden>
+      <div class="tarjeta">
+        <div class="cabecera-tarjeta"><h2 id="titulo-form">Nuevo tareo</h2></div>
+        <form id="form-tareo" class="pasos" autocomplete="off">
+          <fieldset class="paso">
+            <legend><span class="paso-num">1</span> ¿Quién eres y con qué rol?</legend>
+            <div class="grid-form">
+              <label>Persona <select id="f-persona" required></select></label>
+              <div class="campo"><span class="etiqueta">Rol</span><div id="f-rol" class="segmentado" role="radiogroup"></div></div>
+            </div>
+            <p class="ayuda" id="ayuda-personas" hidden>Aún no hay personas en la lista. Pide al responsable que la cargue.</p>
+          </fieldset>
+          <fieldset class="paso">
+            <legend><span class="paso-num">2</span> Cliente</legend>
+            <div class="grid-form">
+              <label>Cliente <select id="f-cliente" required></select></label>
+              <label>Descripción (opcional) <input id="f-descripcion" maxlength="300" placeholder="Ej. Pruebas de regresión del módulo de pagos"></label>
+            </div>
+            <p class="ayuda" id="ayuda-clientes" hidden>Aún no hay clientes en la lista. Pide al responsable que la cargue.</p>
+          </fieldset>
+          <fieldset class="paso">
+            <legend><span class="paso-num">3</span> Horario</legend>
+            <div class="grid-form horario">
+              <label>Fecha <input type="date" id="f-fecha" required></label>
+              <label>Inicio <input type="time" id="f-inicio" required></label>
+              <label>Fin <input type="time" id="f-fin" required></label>
+              <div class="campo"><span class="etiqueta">Horas</span><output id="f-horas" class="horas-preview">0.00 h</output></div>
+            </div>
+          </fieldset>
+          <div class="acciones">
+            <button type="submit" class="btn primario" id="btn-guardar">Guardar tareo</button>
+            <button type="button" class="btn" id="btn-cancelar-edicion" hidden>Cancelar edición</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="tarjeta">
+        <div class="cabecera-tarjeta">
+          <h2>Mis tareos</h2>
+          <label class="inline">Mes <input type="month" id="mes-mis-tareos"></label>
+        </div>
+        <div id="mis-tareos"></div>
+      </div>
+    </div>
+  </main>
+  <div id="avisos" class="avisos" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
