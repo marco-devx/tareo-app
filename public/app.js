@@ -569,14 +569,6 @@
     }
     const T = r.totalHoras;
     const tarjeta = (titulo, html) => `<div class="tarjeta"><h3>${titulo}</h3>${html}</div>`;
-    const detalle = `<div class="tabla-scroll"><table class="tabla">
-      <thead><tr><th>Fecha</th><th>Persona</th><th>Rol</th><th>Cliente</th><th class="num">Horario</th><th class="num">Horas</th></tr></thead>
-      <tbody>${r.tareos
-        .map((t) => `<tr><td>${fmtFecha(t.fecha)}</td><td>${esc(t.personaNombre)}</td><td>${esc(t.rol)}</td><td>${esc(t.clienteNombre)}${t.descripcion ? `<div class="descr">${esc(t.descripcion)}</div>` : ''}</td><td class="num">${t.inicio}–${t.fin}</td><td class="num">${fmtH(t.horas)}</td></tr>`)
-        .join('')}</tbody>
-      <tfoot><tr class="total"><td colspan="5">Total (${r.totalTareos} tareos)</td><td class="num">${fmtH(T)}</td></tr></tfoot>
-    </table></div>`;
-
     cont.innerHTML = `
       <p class="subtitulo-reporte">Periodo: ${periodo}. Generado el ${new Date(r.generadoEn).toLocaleString('es')}.</p>
       <div class="kpis">
@@ -591,7 +583,7 @@
         ${tarjeta('Horas por rol', tablaResumen('Rol', r.porRol.map((g) => ({ nombre: g.rol, tareos: g.tareos, horas: g.horas })), T))}
       </div>
       ${tarjeta('Persona × Cliente (horas)', matriz(r.personaCliente, 'personaId', 'persona', 'clienteId', 'cliente', r.porPersona, r.porCliente))}
-      ${tarjeta('Detalle de tareos', detalle)}`;
+      ${tarjeta('Persona × Rol (horas dedicadas por rol)', matriz(r.personaRol, 'personaId', 'persona', 'rol', 'rol', r.porPersona, r.porRol))}`;
   }
 
   const paginaReporte = {

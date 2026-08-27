@@ -258,6 +258,7 @@ export async function reporte({ desde, hasta } = {}) {
     porCliente: agrupar(tareos, (t) => t.clienteId, (t) => ({ clienteId: t.clienteId, cliente: t.clienteNombre })),
     porRol: agrupar(tareos, (t) => t.rol, (t) => ({ rol: t.rol })),
     personaCliente: agrupar(tareos, (t) => `${t.personaId}|${t.clienteId}`, (t) => ({ personaId: t.personaId, persona: t.personaNombre, clienteId: t.clienteId, cliente: t.clienteNombre })),
+    personaRol: agrupar(tareos, (t) => `${t.personaId}|${t.rol}`, (t) => ({ personaId: t.personaId, persona: t.personaNombre, rol: t.rol })),
     tareos,
   };
 }
@@ -280,6 +281,7 @@ export function csvResumen(rep) {
   for (const g of rep.porCliente) filas.push(['Por cliente', '', g.cliente, '', g.tareos, g.horas.toFixed(2)]);
   for (const g of rep.porRol) filas.push(['Por rol', '', '', g.rol, g.tareos, g.horas.toFixed(2)]);
   for (const g of rep.personaCliente) filas.push(['Persona × cliente', g.persona, g.cliente, '', g.tareos, g.horas.toFixed(2)]);
+  for (const g of rep.personaRol) filas.push(['Persona × rol', g.persona, '', g.rol, g.tareos, g.horas.toFixed(2)]);
   filas.push(['TOTAL', '', '', '', rep.totalTareos, rep.totalHoras.toFixed(2)]);
   return aCsv(filas);
 }

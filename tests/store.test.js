@@ -79,6 +79,8 @@ test('reporte agrega por persona, cliente y rol', async () => {
   assert.deepEqual(r.porCliente.map((c) => [c.cliente, c.horas]), [['Minera Andes', 10.5], ['Banco del Sur', 1]]);
   assert.deepEqual(r.porRol.map((x) => [x.rol, x.horas]), [['Developer', 8], ['QA', 2.5], ['Producto', 1]]);
   assert.equal(r.personaCliente.find((x) => x.persona === 'Ana Pérez' && x.cliente === 'Minera Andes').horas, 2.5);
+  assert.deepEqual(r.personaRol.map((x) => [x.persona, x.rol, x.horas]), [['Luis Gómez', 'Developer', 8], ['Ana Pérez', 'QA', 2.5], ['Ana Pérez', 'Producto', 1]]);
+  assert.match(store.csvResumen(r), /Persona × rol,Ana Pérez,,Producto,1,1\.00/);
   assert.equal('porActividad' in r, false);
 
   const todo = await store.reporte({});
