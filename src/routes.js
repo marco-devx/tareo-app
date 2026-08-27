@@ -1,7 +1,7 @@
 // API HTTP (JSON) bajo /api
 import { Router } from 'express';
 import * as store from './store.js';
-import { MODO } from './db.js';
+import { MODO, EN_VERCEL, MENSAJE_SIN_CONFIGURAR } from './db.js';
 
 const APP_PASSWORD = process.env.APP_PASSWORD || '';
 const api = Router();
@@ -11,7 +11,21 @@ const fechaQuery = (v) => (typeof v === 'string' && RE_FECHA.test(v) ? v : undef
 const texto = (v) => (typeof v === 'string' && v ? v : undefined);
 const nombreArchivo = (base, rep) => `${base}_${rep.desde || 'inicio'}_${rep.hasta || 'hoy'}.csv`;
 
-api.get('/health', (req, res) => res.json({ ok: true, almacenamiento: MODO }));
+// Diagnóstico rápido: abre /api/health en el navegador para saber dónde se guardan los datos.
+api.get('/health', (req, res) => {
+  const ok = MODO !== 'sin-configurar';
+  res.status(ok ? 200 : 503).json({
+    ok,
+    almacenamiento: MODO,
+    enVercel: EN_VERCEL,
+    blobConectado: MODO === 'vercel-blob',
+    mensaje: ok
+      ? MODO === 'vercel-blob'
+        ? 'Correcto: los datos se guardan en el Vercel Blob Store.'
+        : 'Modo local: los datos se guardan en archivos de la carpeta DATA_DIR.'
+      : MENSAJE_SIN_CONFIGURAR,
+  });
+});
 api.get('/config', (req, res) => {
   res.json({ roles: store.ROLES, requierePassword: Boolean(APP_PASSWORD), almacenamiento: MODO });
 });
@@ -75,8 +89,9 @@ api.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada.' }));
 // Se monta a nivel de app para cubrir también los errores de express.json().
 export function manejarErrores(err, req, res, next) {
   const status = err.status ?? (err.type === 'entity.parse.failed' ? 400 : 500);
-  if (status >= 500) console.error(err);
-  res.status(status).json({ error: status >= 500 ? `Error interno: ${err.message}` : err.message });
+  const inesperado = status >= 500 && status !== 503; // 503 = falta configurar el almacenamiento (mensaje ya claro)
+  if (inesperado) console.error(err);
+  res.status(status).json({ error: inesperado ? `Error interno: ${err.message}` : err.message });
 }
 
 export default api;

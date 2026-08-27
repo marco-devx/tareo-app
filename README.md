@@ -49,6 +49,18 @@ Pruebas: `npm test`.
 
 También sirve con la CLI: `npx vercel` (preview) y `npx vercel --prod`.
 
+### Comprobar que la base de datos quedó conectada
+
+Abre `https://<tu-app>.vercel.app/api/health`:
+
+- `"almacenamiento": "vercel-blob"` → correcto, los datos se guardan en el Blob Store.
+- `"almacenamiento": "sin-configurar"` (HTTP 503) → la función no ve `BLOB_READ_WRITE_TOKEN`. Revisa en Vercel:
+  1. **Storage** → el store debe mostrar tu proyecto en *Connected Projects* (si no, **Connect Project**).
+  2. **Settings → Environment Variables** → debe existir `BLOB_READ_WRITE_TOKEN` para *Production* (y Preview).
+  3. **Deployments → ⋯ → Redeploy**: las variables solo se aplican a deploys nuevos.
+
+Si ves `ENOENT ... mkdir '/var/task/data'` en una versión anterior de la app, es el mismo problema: sin token, intentó usar la carpeta local (de solo lectura en Vercel).
+
 ### ¿Cuánto cuesta?
 
 Nada dentro del plan Hobby: incluye 5 GB de almacenamiento Blob, 100 000 operaciones simples y 10 000 operaciones avanzadas al mes. Esta app hace **una operación avanzada por cada guardado** (crear/editar/eliminar) y una simple por lectura; con 5 personas y dos meses de uso se está muy por debajo. Si se alcanzara el límite, Vercel bloquea Blob hasta el siguiente ciclo, pero **no cobra**.

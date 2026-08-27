@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 // Base de datos de archivos en una carpeta temporal, aislada por ejecución.
 const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'tareo-test-'));
@@ -87,6 +88,18 @@ test('reporte agrega por persona, cliente y rol', async () => {
   assert.ok(csv.startsWith('﻿Fecha,Persona,Rol,Cliente,Descripción,Inicio,Fin,Horas'));
   assert.equal(csv.trim().split('\r\n').length, 4);
   assert.match(store.csvResumen(r), /TOTAL,,,,3,11\.50/);
+});
+
+test('en Vercel sin Blob Store el modo es sin-configurar y no intenta escribir en disco', () => {
+  const salida = execFileSync(process.execPath, ['--input-type=module', '-e', `
+    const db = await import('./src/db.js');
+    let error = '';
+    try { await db.leer('personas.json', []); } catch (e) { error = e.status + ' ' + e.message; }
+    console.log(JSON.stringify({ modo: db.MODO, error }));
+  `], { cwd: path.resolve(import.meta.dirname, '..'), env: { ...process.env, VERCEL: '1', BLOB_READ_WRITE_TOKEN: '' }, encoding: 'utf8' });
+  const r = JSON.parse(salida.trim().split('\n').pop());
+  assert.equal(r.modo, 'sin-configurar');
+  assert.match(r.error, /^503 Falta conectar el Blob Store/);
 });
 
 test('no se elimina un catálogo en uso; sí uno libre', async () => {

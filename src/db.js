@@ -8,7 +8,14 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
-export const MODO = BLOB_TOKEN ? 'vercel-blob' : 'archivos';
+export const EN_VERCEL = Boolean(process.env.VERCEL);
+// 'vercel-blob'    → nube, archivos JSON en un Vercel Blob Store
+// 'archivos'       → local / servidor propio, carpeta DATA_DIR
+// 'sin-configurar' → estamos en Vercel pero falta conectar el Blob Store (BLOB_READ_WRITE_TOKEN)
+export const MODO = BLOB_TOKEN ? 'vercel-blob' : EN_VERCEL ? 'sin-configurar' : 'archivos';
+export const MENSAJE_SIN_CONFIGURAR =
+  'Falta conectar el Blob Store al proyecto en Vercel (no existe la variable BLOB_READ_WRITE_TOKEN). ' +
+  'Ve a Storage → Create Database → Blob → Connect Project y luego haz Redeploy.';
 export const DATA_DIR = path.resolve(process.env.DATA_DIR || 'data');
 const BLOB_ACCESS = process.env.BLOB_ACCESS === 'public' ? 'public' : 'private';
 const BLOB_PREFIX = (process.env.BLOB_PREFIX || 'tareo-db').replace(/^\/+|\/+$/g, '');
@@ -84,9 +91,18 @@ async function blobEscribir(clave, valor, version) {
   });
 }
 
-const backend = MODO === 'vercel-blob'
-  ? { leer: blobLeer, escribir: blobEscribir }
-  : { leer: archivoLeer, escribir: archivoEscribir };
+// ---------------- backend: Vercel sin Blob Store ----------------
+function sinConfigurar() {
+  const err = new Error(MENSAJE_SIN_CONFIGURAR);
+  err.status = 503;
+  throw err;
+}
+
+const backend = {
+  'vercel-blob': { leer: blobLeer, escribir: blobEscribir },
+  archivos: { leer: archivoLeer, escribir: archivoEscribir },
+  'sin-configurar': { leer: sinConfigurar, escribir: sinConfigurar },
+}[MODO];
 
 /** Devuelve el contenido del archivo o `porDefecto` si no existe. */
 export async function leer(clave, porDefecto = null) {

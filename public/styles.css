@@ -147,6 +147,9 @@ input:focus, select:focus { outline: 2px solid var(--primario-suave); border-col
 .aviso.error { background: var(--error); }
 @keyframes entrar { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
 
+.banner-error { background: var(--error-suave); color: var(--error); border: 1px solid #fca5a5; border-radius: var(--radio); padding: .75rem 1rem; margin-bottom: 1rem; font-size: .95rem; }
+.banner-error a { color: inherit; }
+
 details summary { cursor: pointer; font-weight: 600; color: var(--primario); margin: .75rem 0 .5rem; }
 
 @media (max-width: 600px) {
