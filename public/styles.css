@@ -85,6 +85,7 @@ input:focus, select:focus { outline: 2px solid var(--primario-suave); border-col
 .paso legend { font-weight: 700; padding: 0 .4rem; display: flex; align-items: center; gap: .5rem; }
 .paso-num { display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--primario); color: #fff; font-size: .8rem; }
 
+.campo-rol { grid-column: 1 / -1; } /* los roles ocupan su propia fila para que no desalineen al selector de persona */
 .segmentado { display: flex; flex-wrap: wrap; gap: .35rem; }
 .segmentado label {
   flex: 1 1 auto; cursor: pointer; text-align: center; padding: .5rem .75rem; border: 1px solid #cbd5e1; border-radius: 8px;
