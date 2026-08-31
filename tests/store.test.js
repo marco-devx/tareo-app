@@ -20,7 +20,7 @@ const cliente = await store.crear('clientes', { nombre: 'Minera Andes' });
 const cliente2 = await store.crear('clientes', { nombre: 'Banco Sur' });
 
 test('roles disponibles y archivos de la base de datos', async () => {
-  assert.deepEqual(store.ROLES, ['QA', 'Implementador', 'Producto', 'Developer', 'Soporte']);
+  assert.deepEqual(store.ROLES, ['QA', 'Implementador', 'Producto', 'Developer', 'Soporte', 'Jefe de Proyectos']);
   assert.deepEqual(store.TIPOS_CATALOGO, ['personas', 'clientes']);
   const archivos = await fs.readdir(dir);
   assert.ok(archivos.includes('personas.json') && archivos.includes('clientes.json'));
@@ -34,6 +34,9 @@ test('catálogos: validaciones y duplicados', async () => {
   await assert.rejects(store.crear('clientes', { nombre: '  minera   andes ' }), { status: 409 });
   const soporte = await store.crear('personas', { nombre: 'Rosa Soporte', rol: 'Soporte' });
   assert.equal(soporte.rol, 'Soporte');
+  const jefe = await store.crear('personas', { nombre: 'Elena Jefa', rol: 'Jefe de Proyectos' });
+  assert.equal(jefe.rol, 'Jefe de Proyectos');
+  await store.eliminar('personas', jefe.id);
   const editado = await store.editar('clientes', cliente2.id, { nombre: 'Banco del Sur', activo: false });
   assert.equal(editado.nombre, 'Banco del Sur');
   assert.equal(editado.activo, false);
@@ -124,7 +127,7 @@ test('API HTTP: config, catálogos, tareos, reporte csv, páginas y errores JSON
   const base = `http://127.0.0.1:${servidor.address().port}`;
   try {
     const cfg = await (await fetch(`${base}/api/config`)).json();
-    assert.deepEqual(cfg.roles, ['QA', 'Implementador', 'Producto', 'Developer', 'Soporte']);
+    assert.deepEqual(cfg.roles, ['QA', 'Implementador', 'Producto', 'Developer', 'Soporte', 'Jefe de Proyectos']);
     assert.equal(cfg.almacenamiento, 'archivos');
 
     const cat = await (await fetch(`${base}/api/catalogos`)).json();

@@ -11,7 +11,7 @@ Web app mínima para que un equipo pequeño (≈5 personas) registre **de qué h
 
 | URL | Para quién | Qué hace |
 |---|---|---|
-| `/` | Todo el equipo | **Tareo**: paso 1 elegir tu nombre de la lista y el rol (QA, Implementador, Producto, Developer, Soporte) → paso 2 cliente (+ descripción opcional) → paso 3 fecha, hora inicio y hora fin. Abajo, "Mis tareos" del mes con editar/eliminar. El nombre elegido se recuerda en el navegador. |
+| `/` | Todo el equipo | **Tareo**: paso 1 elegir tu nombre de la lista y el rol (QA, Implementador, Producto, Developer, Soporte, Jefe de Proyectos) → paso 2 cliente (+ descripción opcional) → paso 3 fecha, hora inicio y hora fin. Abajo, "Mis tareos" del mes con editar/eliminar. El nombre elegido se recuerda en el navegador. |
 | `/personas` | Responsable (enlace oculto) | Cargar y mantener la lista de personas (nombre, rol por defecto, correo opcional). Nadie se registra por su cuenta. |
 | `/clientes` | Responsable (enlace oculto) | Cargar y mantener la lista de clientes que se seleccionan en el paso 2. |
 | `/reporte` | Responsable (enlace oculto) | Horas por persona, por cliente, por rol y matrices persona×cliente y persona×rol. Filtro por fechas, exportar CSV (detalle y resumen, abren en Excel), respaldo JSON e imprimir. |

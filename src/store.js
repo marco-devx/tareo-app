@@ -2,7 +2,7 @@
 import { randomUUID } from 'node:crypto';
 import * as db from './db.js';
 
-export const ROLES = ['QA', 'Implementador', 'Producto', 'Developer', 'Soporte'];
+export const ROLES = ['QA', 'Implementador', 'Producto', 'Developer', 'Soporte', 'Jefe de Proyectos'];
 
 const CLAVE = {
   personas: 'personas.json',
